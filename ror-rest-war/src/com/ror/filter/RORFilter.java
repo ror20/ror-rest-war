@@ -38,6 +38,7 @@ public class RORFilter implements Filter {
 		// place your code here
 
 		// pass the request along the filter chain
+		System.out.println("Enabling CORS!!");
 		HttpServletResponse response1 = (HttpServletResponse) response;
 
 		HttpServletRequest request1 = (HttpServletRequest) request;
