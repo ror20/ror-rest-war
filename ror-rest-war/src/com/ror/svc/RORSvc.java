@@ -1,9 +1,10 @@
-package com.ror.dao;
+package com.ror.svc;
 
 import com.ror.model.RORUser;
 import com.ror.vo.RORResponseVO;
 
-public interface RORDAO {
-
+public interface RORSvc {
+	
 	public RORResponseVO storeUser(RORUser user);
+
 }
