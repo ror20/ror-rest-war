@@ -17,4 +17,9 @@ public class RORSvcImpl implements RORSvc {
 		return rorDAO.storeUser(user);
 	}
 
+	@Override
+	public RORUser fetchUser(String userId) {
+		return rorDAO.fetchUser(userId);
+	}
+
 }

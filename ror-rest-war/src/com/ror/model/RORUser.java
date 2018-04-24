@@ -51,4 +51,10 @@ public class RORUser {
 		this.password = password;
 	}
 
+	@Override
+	public String toString() {
+		return "RORUser [userName=" + userName + ", userId=" + userId + ", emailId=" + emailId + ", password="
+				+ password + "]";
+	}
+
 }

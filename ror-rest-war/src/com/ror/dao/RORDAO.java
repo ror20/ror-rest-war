@@ -6,4 +6,6 @@ import com.ror.vo.RORResponseVO;
 public interface RORDAO {
 
 	public RORResponseVO storeUser(RORUser user);
+
+	public RORUser fetchUser(String userId);
 }
