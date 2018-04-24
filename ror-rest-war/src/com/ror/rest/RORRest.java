@@ -50,7 +50,7 @@ public class RORRest {
 	}
 
 	@RequestMapping(value = "/store", consumes = "application/json", method = RequestMethod.POST)
-	public String storeUser(@RequestBody User user1) {
+	public @ResponseBody String storeUser(@RequestBody User user1) {
 		mongoDatabase = mongoClient.getDatabase(DATABASE_NAME);
 		mongoCollection = mongoDatabase.getCollection(COLLECTION_NAME);
 		FindIterable<Document> findIterable = mongoCollection.find();
