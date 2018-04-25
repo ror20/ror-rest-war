@@ -27,6 +27,10 @@ public class RORRest {
 	 */
 	@RequestMapping(value = "/fetchUser/{id}", method = RequestMethod.GET)
 	public @ResponseBody RORUser fetchUser(@PathVariable("id") String userId) {
+		RORUser user = rorSvc.fetchUser(userId);
+		/*if (user == null) {
+			return new RORResponseVO("ROR 404", "User Doesn't Exsist");
+		}*/
 		return rorSvc.fetchUser(userId);
 	}
 
@@ -40,13 +44,27 @@ public class RORRest {
 	public @ResponseBody RORResponseVO storeUser(@RequestBody RORUser user) {
 		return rorSvc.storeUser(user);
 	}
-	
+
 	/**
+	 * Update user rest service
 	 * 
+	 * @param user
+	 * @return responseVO
 	 */
 	@RequestMapping(value = "/updateUser", consumes = "application/json", method = RequestMethod.PUT)
 	public @ResponseBody RORResponseVO updateUser(@RequestBody RORUser user) {
 		return rorSvc.updateUser(user);
+	}
+
+	/**
+	 * Delete user rest service
+	 * 
+	 * @param user
+	 * @return responseVO
+	 */
+	@RequestMapping(value = "/deleteUser/{id}", method = RequestMethod.DELETE)
+	public @ResponseBody RORResponseVO deleteUser(@PathVariable("id") String userId) {
+		return rorSvc.deleteUser(userId);
 	}
 
 }
