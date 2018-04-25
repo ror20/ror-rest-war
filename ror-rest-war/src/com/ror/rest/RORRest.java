@@ -40,5 +40,13 @@ public class RORRest {
 	public @ResponseBody RORResponseVO storeUser(@RequestBody RORUser user) {
 		return rorSvc.storeUser(user);
 	}
+	
+	/**
+	 * 
+	 */
+	@RequestMapping(value = "/updateUser", consumes = "application/json", method = RequestMethod.PUT)
+	public @ResponseBody RORResponseVO updateUser(@RequestBody RORUser user) {
+		return rorSvc.updateUser(user);
+	}
 
 }

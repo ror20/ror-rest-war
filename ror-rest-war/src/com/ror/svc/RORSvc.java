@@ -9,4 +9,6 @@ public interface RORSvc {
 	
 	public RORUser fetchUser(String userId);
 
+	public RORResponseVO updateUser(RORUser user);
+
 }

@@ -16,12 +16,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class RORFilter implements Filter {
 
-    /**
-     * Default constructor. 
-     */
-    public RORFilter() {
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * Default constructor.
+	 */
+	public RORFilter() {
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @see Filter#destroy()
@@ -33,7 +33,8 @@ public class RORFilter implements Filter {
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		// place your code here
 
@@ -45,7 +46,7 @@ public class RORFilter implements Filter {
 
 		response1.setHeader("Access-Control-Allow-Origin", "*");
 
-		response1.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+		response1.setHeader("Access-Control-Allow-Methods", "POST,PUT, GET, OPTIONS, DELETE");
 
 		response1.setHeader("Access-Control-Allow-Headers", "x-requested-with");
 

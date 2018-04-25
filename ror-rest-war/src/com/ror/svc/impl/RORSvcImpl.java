@@ -21,5 +21,10 @@ public class RORSvcImpl implements RORSvc {
 	public RORUser fetchUser(String userId) {
 		return rorDAO.fetchUser(userId);
 	}
+	
+	@Override
+	public RORResponseVO updateUser(RORUser user) {
+		return rorDAO.updateUser(user);
+	}
 
 }

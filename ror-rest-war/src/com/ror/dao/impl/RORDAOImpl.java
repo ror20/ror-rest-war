@@ -70,4 +70,51 @@ public class RORDAOImpl implements RORDAO {
 		return user;
 	}
 
+	@Override
+	public RORResponseVO updateUser(RORUser user) {
+		RORResponseVO responseVO = null;
+
+		try {
+			if (fetchUser(user.getUserId()) == null) {
+				throw new RORException("User does not exist!");
+			} else {
+				mongoDatabase = mongoClient.getDatabase(DATABASE_NAME);
+				mongoCollection = mongoDatabase.getCollection(COLLECTION_NAME);
+				String userJSON = RORUtils.convertToJson(user);
+				Document document = new Document();
+				String key = user.getUserId();
+				document.append(key, userJSON);
+				mongoCollection.insertOne(document);
+				responseVO = new RORResponseVO("200 Ok", "User Details updated successfully!");
+			}
+		} catch (RORException e) {
+			responseVO = new RORResponseVO("400 Bad Request", e.toString());
+		} catch (Exception e) {
+			responseVO = new RORResponseVO("404 Bad Request", "Error occured. Failed to update user details!");
+		}
+
+		return responseVO;
+	}
+	
+	/*public RORResponseVO deleteUser(RORUser user) {
+		RORResponseVO responseVO = null;
+		
+		try {
+			mongoDatabase = mongoClient.getDatabase(DATABASE_NAME);
+			mongoCollection = mongoDatabase.getCollection(COLLECTION_NAME);
+			FindIterable<Document> findIterable = mongoCollection.find();
+			for (Document document1 : findIterable) {
+				if (document1.containsKey(user.getUserId())) {
+					document1.remove(user.getUserId());
+					System.out.println("User Found:" + user);
+				}
+			}
+			
+		} catch (RORException e) {
+			responseVO = new RORResponseVO("400 Bad Request", e.toString());
+		} catch (Exception e) {
+			responseVO = new RORResponseVO("404 Bad Request", "Error occured. Failed to delete user details!");
+		}
+	}*/
+
 }

@@ -8,4 +8,6 @@ public interface RORDAO {
 	public RORResponseVO storeUser(RORUser user);
 
 	public RORUser fetchUser(String userId);
+
+	public RORResponseVO updateUser(RORUser user);
 }
