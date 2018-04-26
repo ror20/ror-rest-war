@@ -27,7 +27,7 @@ public class RORRest {
 	 */
 	@RequestMapping(value = "/fetchUser/{id}", method = RequestMethod.GET)
 	public @ResponseBody RORUser fetchUser(@PathVariable("id") String userId) {
-		RORUser user = rorSvc.fetchUser(userId);
+		/*RORUser user = rorSvc.fetchUser(userId);*/
 		/*if (user == null) {
 			return new RORResponseVO("ROR 404", "User Doesn't Exsist");
 		}*/

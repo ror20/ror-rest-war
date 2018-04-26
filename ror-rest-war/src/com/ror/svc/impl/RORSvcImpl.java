@@ -8,7 +8,7 @@ import com.ror.svc.RORSvc;
 import com.ror.vo.RORResponseVO;
 
 public class RORSvcImpl implements RORSvc {
-	
+
 	@Autowired
 	private RORDAO rorDAO;
 
@@ -19,12 +19,21 @@ public class RORSvcImpl implements RORSvc {
 
 	@Override
 	public RORUser fetchUser(String userId) {
-		return rorDAO.fetchUser(userId);
+		RORUser user = rorDAO.fetchUser(userId);
+		if (user == null) {
+			return new RORUser(null, null, null, null);
+		}
+		return user;
 	}
-	
+
 	@Override
 	public RORResponseVO updateUser(RORUser user) {
 		return rorDAO.updateUser(user);
+	}
+
+	@Override
+	public RORResponseVO deleteUser(String userId) {
+		return rorDAO.deleteUser(userId);
 	}
 
 }

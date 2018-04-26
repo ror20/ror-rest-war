@@ -10,4 +10,6 @@ public interface RORDAO {
 	public RORUser fetchUser(String userId);
 
 	public RORResponseVO updateUser(RORUser user);
+
+	public RORResponseVO deleteUser(String userId);
 }

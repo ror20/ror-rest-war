@@ -4,7 +4,7 @@ public class RORResponseVO {
 
 	private String statusCode;
 	private String statusMessage;
-
+	
 	public RORResponseVO() {
 	}
 
