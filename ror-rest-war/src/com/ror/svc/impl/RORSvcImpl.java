@@ -1,5 +1,7 @@
 package com.ror.svc.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ror.dao.RORDAO;
@@ -34,6 +36,11 @@ public class RORSvcImpl implements RORSvc {
 	@Override
 	public RORResponseVO deleteUser(String userId) {
 		return rorDAO.deleteUser(userId);
+	}
+
+	@Override
+	public List<RORUser> fetchAlluser() {
+		return rorDAO.fetchAllUser();
 	}
 
 }

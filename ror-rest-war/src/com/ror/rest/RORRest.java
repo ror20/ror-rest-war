@@ -1,5 +1,7 @@
 package com.ror.rest;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,11 +29,7 @@ public class RORRest {
 	 */
 	@RequestMapping(value = "/fetchUser/{id}", method = RequestMethod.GET)
 	public @ResponseBody RORUser fetchUser(@PathVariable("id") String userId) {
-		/*RORUser user = rorSvc.fetchUser(userId);*/
-		/*if (user == null) {
-			return new RORResponseVO("ROR 404", "User Doesn't Exsist");
-		}*/
-		return rorSvc.fetchUser(userId);
+			return rorSvc.fetchUser(userId);
 	}
 
 	/**
@@ -65,6 +63,16 @@ public class RORRest {
 	@RequestMapping(value = "/deleteUser/{id}", method = RequestMethod.DELETE)
 	public @ResponseBody RORResponseVO deleteUser(@PathVariable("id") String userId) {
 		return rorSvc.deleteUser(userId);
+	}
+
+	/**
+	 * Fetches all the users from the DB rest service
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/fetchAllUsers", method = RequestMethod.GET)
+	public @ResponseBody List<RORUser> fetchAllusers() {
+		return rorSvc.fetchAlluser();
 	}
 
 }
