@@ -43,4 +43,9 @@ public class RORSvcImpl implements RORSvc {
 		return rorDAO.fetchAllUser();
 	}
 
+	@Override
+	public boolean checkUserExist(String userId) {
+			return rorDAO.checkUserExist(userId);
+	}
+
 }

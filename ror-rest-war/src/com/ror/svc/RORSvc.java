@@ -17,4 +17,6 @@ public interface RORSvc {
 
 	public List<RORUser> fetchAlluser();
 
+	public boolean checkUserExist(String userId);
+
 }

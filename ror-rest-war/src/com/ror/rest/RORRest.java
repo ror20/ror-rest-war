@@ -29,7 +29,7 @@ public class RORRest {
 	 */
 	@RequestMapping(value = "/fetchUser/{id}", method = RequestMethod.GET)
 	public @ResponseBody RORUser fetchUser(@PathVariable("id") String userId) {
-			return rorSvc.fetchUser(userId);
+		return rorSvc.fetchUser(userId);
 	}
 
 	/**
@@ -73,6 +73,17 @@ public class RORRest {
 	@RequestMapping(value = "/fetchAllUsers", method = RequestMethod.GET)
 	public @ResponseBody List<RORUser> fetchAllusers() {
 		return rorSvc.fetchAlluser();
+	}
+
+	/**
+	 * Checks if the userId is present or not
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = "/checkUserExist/{id}", method = RequestMethod.GET)
+	public @ResponseBody boolean checkUserExist(@PathVariable("id") String userId) {
+		return rorSvc.checkUserExist(userId);
 	}
 
 }

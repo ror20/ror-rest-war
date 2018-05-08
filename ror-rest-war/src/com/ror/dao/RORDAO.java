@@ -16,4 +16,6 @@ public interface RORDAO {
 	public RORResponseVO deleteUser(String userId);
 
 	public List<RORUser> fetchAllUser();
+
+	public boolean checkUserExist(String userId);
 }

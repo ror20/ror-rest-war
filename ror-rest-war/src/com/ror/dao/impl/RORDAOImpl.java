@@ -93,6 +93,7 @@ public class RORDAOImpl implements RORDAO {
 		}
 		return user;
 	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public RORResponseVO updateUser(RORUser user) {
@@ -125,6 +126,7 @@ public class RORDAOImpl implements RORDAO {
 		}
 		return responseVO;
 	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public RORResponseVO deleteUser(String userId) {
@@ -173,7 +175,7 @@ public class RORDAOImpl implements RORDAO {
 		}
 		Collection<String> rorValues = userMap.values();
 		Iterator<String> itr = rorValues.iterator();
-		while(itr.hasNext()) {
+		while (itr.hasNext()) {
 			rorUserList.add((RORUser) convertToPOJO(itr.next(), RORUser.class));
 		}
 		return rorUserList;
@@ -182,6 +184,23 @@ public class RORDAOImpl implements RORDAO {
 	private void setMongoParameters() {
 		mongoDatabase = mongoClient.getDatabase(DATABASE_NAME);
 		mongoCollection = mongoDatabase.getCollection(COLLECTION_NAME);
+	}
+
+	@Override
+	public boolean checkUserExist(String userId) {
+		Map<String, String> userMap = null;
+		setMongoParameters();
+		FindIterable<Document> findIterable = mongoCollection.find();
+		for (Document document : findIterable) {
+			if (document.containsKey(USERS_DOCUMENT)) {
+				userMap = (Map<String, String>) convertToPOJO(document.get(USERS_DOCUMENT), Map.class);
+				break;
+			}
+		}
+		if (userMap.containsKey(userId)) {
+			return true;
+		}
+		return false;
 	}
 
 }
