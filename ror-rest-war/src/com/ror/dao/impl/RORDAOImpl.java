@@ -203,4 +203,29 @@ public class RORDAOImpl implements RORDAO {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean checkPasswordMatch(String id, String password) {
+		Map<String, String> userMap = null;
+		setMongoParameters();
+		FindIterable<Document> findIterable = mongoCollection.find();
+		for (Document document : findIterable) {
+			if (document.containsKey(USERS_DOCUMENT)) {
+				userMap = (Map<String, String>) convertToPOJO(document.get(USERS_DOCUMENT), Map.class);
+				break;
+			}
+		}
+		if (userMap.containsKey(id)) {
+			RORUser user = (RORUser) convertToPOJO(userMap.get(id), RORUser.class);
+			if (user != null) {
+				if (password.equals(user.getPassword())) {
+					return true;
+				}
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+
 }

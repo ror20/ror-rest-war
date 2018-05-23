@@ -19,4 +19,6 @@ public interface RORSvc {
 
 	public boolean checkUserExist(String userId);
 
+	public boolean checkPasswordMatch(String idAndPassword);
+
 }

@@ -11,4 +11,6 @@ public class RORConstants {
 	public static final String DOCUMENT_ID_VALUE = "RORUserList_NEW";
 
 	public static final String DOCUMENT_ID = "_id";
+	
+	public static final String SYMBOL_AND = "&";
 }

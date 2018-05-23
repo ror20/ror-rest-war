@@ -86,4 +86,14 @@ public class RORRest {
 		return rorSvc.checkUserExist(userId);
 	}
 
+	/**
+	 * Id and Password match check
+	 * 
+	 * @param idAndPassword
+	 * @return
+	 */
+	@RequestMapping(value = "/checkPasswordMatch/{idpassword}", method = RequestMethod.GET)
+	public @ResponseBody boolean checkPasswordMatch(@PathVariable("idpassword") String idAndPassword) {
+		return rorSvc.checkPasswordMatch(idAndPassword);
+	}
 }

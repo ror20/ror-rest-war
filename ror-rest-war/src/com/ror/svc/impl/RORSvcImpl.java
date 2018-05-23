@@ -1,5 +1,7 @@
 package com.ror.svc.impl;
 
+import static com.ror.constants.RORConstants.SYMBOL_AND;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +47,19 @@ public class RORSvcImpl implements RORSvc {
 
 	@Override
 	public boolean checkUserExist(String userId) {
-			return rorDAO.checkUserExist(userId);
+		return rorDAO.checkUserExist(userId);
+	}
+
+	@Override
+	public boolean checkPasswordMatch(String idAndPassword) {
+		String credentials[] = idAndPassword.split(SYMBOL_AND);
+		if (credentials.length == 2) {
+			String id = credentials[0];
+			String password = credentials[1];
+			return rorDAO.checkPasswordMatch(id, password);
+		} else {
+			return false;
+		}
 	}
 
 }

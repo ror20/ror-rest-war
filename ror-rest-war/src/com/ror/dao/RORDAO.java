@@ -18,4 +18,6 @@ public interface RORDAO {
 	public List<RORUser> fetchAllUser();
 
 	public boolean checkUserExist(String userId);
+
+	public boolean checkPasswordMatch(String id, String password);
 }
