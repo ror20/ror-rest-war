@@ -44,7 +44,7 @@ public class RORFilter implements Filter {
 
 		HttpServletRequest request1 = (HttpServletRequest) request;
 		
-		response1.setHeader("Access-Control-Allow-Origin", "*");
+		//response1.setHeader("Access-Control-Allow-Origin", "*");
 
 		response1.setHeader("Access-Control-Allow-Methods", "POST,PUT, GET, OPTIONS, DELETE");
 
