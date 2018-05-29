@@ -2,11 +2,14 @@ package com.ror.svc.impl;
 
 import static com.ror.constants.RORConstants.SYMBOL_AND;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ror.dao.RORDAO;
+import com.ror.model.MessageDetails;
+import com.ror.model.RORMessages;
 import com.ror.model.RORUser;
 import com.ror.svc.RORSvc;
 import com.ror.vo.RORResponseVO;
@@ -60,6 +63,30 @@ public class RORSvcImpl implements RORSvc {
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	public List<MessageDetails> sentMessage(String id) {
+		return rorDAO.sentMessage(id);
+	}
+
+	@Override
+	public List<MessageDetails> receivedMessage(String id) {
+		return rorDAO.receivedMessage(id);
+	}
+
+	@Override
+	public RORResponseVO draftMessage(MessageDetails messageDetails) {
+		messageDetails.setMessageSentTime(new Date().toString());
+		return rorDAO.draftMessage(messageDetails);
+	}
+
+	@Override
+	public RORMessages messageComepleteDetails(String id) {
+		 List<MessageDetails> sent = rorDAO.sentMessage(id);
+		 List<MessageDetails> received = rorDAO.receivedMessage(id);
+		 RORMessages messages = new RORMessages(id, sent, received);
+		return messages;
 	}
 
 }

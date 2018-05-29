@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ror.model.MessageDetails;
+import com.ror.model.RORMessages;
 import com.ror.model.RORUser;
 import com.ror.svc.RORSvc;
 import com.ror.vo.RORResponseVO;
@@ -95,5 +97,49 @@ public class RORRest {
 	@RequestMapping(value = "/checkPasswordMatch/{idpassword}", method = RequestMethod.GET)
 	public @ResponseBody boolean checkPasswordMatch(@PathVariable("idpassword") String idAndPassword) {
 		return rorSvc.checkPasswordMatch(idAndPassword);
+	}
+
+	/**
+	 * Rest Service to fetch the messages sent by a user
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/messages/sent/{id}", method = RequestMethod.GET)
+	public @ResponseBody List<MessageDetails> sentMessage(@PathVariable("id") String id) {
+		return rorSvc.sentMessage(id);
+	}
+
+	/**
+	 * Rest Service to fetch the messages received by a user
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/messages/received/{id}", method = RequestMethod.GET)
+	public @ResponseBody List<MessageDetails> receivedMessage(@PathVariable("id") String id) {
+		return rorSvc.receivedMessage(id);
+	}
+
+	/**
+	 * Rest Service to send a message to a user
+	 * 
+	 * @param messageDetails
+	 * @return
+	 */
+	@RequestMapping(value = "/messages/draft", method = RequestMethod.POST)
+	public @ResponseBody RORResponseVO draftMessage(@RequestBody MessageDetails messageDetails) {
+		return rorSvc.draftMessage(messageDetails);
+	}
+
+	/**
+	 * Rest Service to fetch the complete messaging details of a user
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/messages/details/{id}", method = RequestMethod.GET)
+	public @ResponseBody RORMessages messageComepleteDetails(@PathVariable("id") String id) {
+		return rorSvc.messageComepleteDetails(id);
 	}
 }

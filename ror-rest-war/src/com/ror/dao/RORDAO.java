@@ -2,6 +2,7 @@ package com.ror.dao;
 
 import java.util.List;
 
+import com.ror.model.MessageDetails;
 import com.ror.model.RORUser;
 import com.ror.vo.RORResponseVO;
 
@@ -20,4 +21,10 @@ public interface RORDAO {
 	public boolean checkUserExist(String userId);
 
 	public boolean checkPasswordMatch(String id, String password);
+
+	public List<MessageDetails> sentMessage(String id);
+
+	public List<MessageDetails> receivedMessage(String id);
+
+	public RORResponseVO draftMessage(MessageDetails messageDetails);
 }
