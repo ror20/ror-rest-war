@@ -313,11 +313,15 @@ public class RORDAOImpl implements RORDAO {
 		setMongoParameters();
 		FindIterable<Document> findIterable = mongoCollection.find();
 		boolean sendFlag = sendMessageFunctionality(messageDetails, userSentMessageMap, sendDocument, findIterable);
-		boolean receiveFlag = receiveMessageFunctionality(messageDetails, userRecMessageMap, recDocument, findIterable);
-		if(sendFlag && receiveFlag) {
-			responseVO =new RORResponseVO("200 OK", "Message Deleivered Successfully");
-		}else {
-			responseVO =new RORResponseVO("400 Bad Request", "Message Failed to Deleiver");
+		if (sendFlag) {
+			boolean receiveFlag = receiveMessageFunctionality(messageDetails, userRecMessageMap, recDocument,findIterable);
+			if (receiveFlag) {
+				responseVO = new RORResponseVO("200 OK", "Message Deleivered Successfully");
+			}else {
+				responseVO = new RORResponseVO("400 Bad Request", "Message Failed to Deleiver");
+			}
+		} else {
+			responseVO = new RORResponseVO("400 Bad Request", "Message Failed to Deleiver");
 		}
 
 		return responseVO;
@@ -381,54 +385,60 @@ public class RORDAOImpl implements RORDAO {
 	@SuppressWarnings("unchecked")
 	public boolean sendMessageFunctionality(MessageDetails messageDetails, Map<String, String> userSentMessageMap,
 			Document sendDocument, FindIterable<Document> findIterable) {
-		for (Document document : findIterable) {
-			System.out.println(document);
-			if (document.containsKey(ROR_SENT_MESSAGE_LIST)) {
-				sendDocument = document;
-				userSentMessageMap = (Map<String, String>) convertToPOJO(document.get(ROR_SENT_MESSAGE_LIST),
-						Map.class);
-				break;
+
+		if (checkUserExist(messageDetails.getFromUserId()) && checkUserExist(messageDetails.getToUserId())) {
+			for (Document document : findIterable) {
+				System.out.println(document);
+				if (document.containsKey(ROR_SENT_MESSAGE_LIST)) {
+					sendDocument = document;
+					userSentMessageMap = (Map<String, String>) convertToPOJO(document.get(ROR_SENT_MESSAGE_LIST),
+							Map.class);
+					break;
+				}
 			}
-		}
-		if (userSentMessageMap != null) {
-			System.out.println("Fetched user sent message map from the document");
-			String sentMessageMapValue = userSentMessageMap.get(messageDetails.getFromUserId());
-			if (sentMessageMapValue != null && !sentMessageMapValue.isEmpty()) {
-				List<MessageDetails> sentMessageList = (List<MessageDetails>) convertToPOJO(sentMessageMapValue,
-						List.class);
-				System.out.println("Message sent list is obtained");
-				if (sentMessageList != null) {
-					sentMessageList.add(messageDetails);
-					userSentMessageMap.put(messageDetails.getFromUserId(), convertToJson(sentMessageList));
-					mongoCollection.deleteOne(Filters.eq(DOCUMENT_ID, ROR_MESSAGE_SENT_DOC));
-					sendDocument.put(ROR_SENT_MESSAGE_LIST, convertToJson(userSentMessageMap));
-					mongoCollection.insertOne(sendDocument);
-					System.out.println("Send Document Message inserted");
-					return true;
+			if (userSentMessageMap != null) {
+				System.out.println("Fetched user sent message map from the document");
+				String sentMessageMapValue = userSentMessageMap.get(messageDetails.getFromUserId());
+				if (sentMessageMapValue != null && !sentMessageMapValue.isEmpty()) {
+					List<MessageDetails> sentMessageList = (List<MessageDetails>) convertToPOJO(sentMessageMapValue,
+							List.class);
+					System.out.println("Message sent list is obtained");
+					if (sentMessageList != null) {
+						sentMessageList.add(messageDetails);
+						userSentMessageMap.put(messageDetails.getFromUserId(), convertToJson(sentMessageList));
+						mongoCollection.deleteOne(Filters.eq(DOCUMENT_ID, ROR_MESSAGE_SENT_DOC));
+						sendDocument.put(ROR_SENT_MESSAGE_LIST, convertToJson(userSentMessageMap));
+						mongoCollection.insertOne(sendDocument);
+						System.out.println("Send Document Message inserted");
+						return true;
+					} else {
+						System.out.println("message list sent is null");
+						sentMessageList = new ArrayList<MessageDetails>();
+						sentMessageList.add(messageDetails);
+						userSentMessageMap.put(messageDetails.getFromUserId(), convertToJson(sentMessageList));
+						mongoCollection.deleteOne(Filters.eq(DOCUMENT_ID, ROR_MESSAGE_SENT_DOC));
+						sendDocument.put(ROR_SENT_MESSAGE_LIST, convertToJson(userSentMessageMap));
+						mongoCollection.insertOne(sendDocument);
+						System.out.println("Send Document Message inserted");
+						return true;
+					}
+
 				} else {
-					System.out.println("message list sent is null");
-					sentMessageList = new ArrayList<MessageDetails>();
+					List<MessageDetails> sentMessageList = new ArrayList<MessageDetails>();
 					sentMessageList.add(messageDetails);
 					userSentMessageMap.put(messageDetails.getFromUserId(), convertToJson(sentMessageList));
 					mongoCollection.deleteOne(Filters.eq(DOCUMENT_ID, ROR_MESSAGE_SENT_DOC));
 					sendDocument.put(ROR_SENT_MESSAGE_LIST, convertToJson(userSentMessageMap));
 					mongoCollection.insertOne(sendDocument);
-					System.out.println("Send Document Message inserted");
+					System.out.println("Send Document Message inserted for new User");
 					return true;
 				}
-
 			} else {
-				List<MessageDetails> sentMessageList = new ArrayList<MessageDetails>();
-				sentMessageList.add(messageDetails);
-				userSentMessageMap.put(messageDetails.getFromUserId(), convertToJson(sentMessageList));
-				mongoCollection.deleteOne(Filters.eq(DOCUMENT_ID, ROR_MESSAGE_SENT_DOC));
-				sendDocument.put(ROR_SENT_MESSAGE_LIST, convertToJson(userSentMessageMap));
-				mongoCollection.insertOne(sendDocument);
-				System.out.println("Send Document Message inserted for new User");
-				return true;
+				System.out.println("UserSentMessageMap is null");
+				return false;
 			}
 		} else {
-			System.out.println("UserSentMessageMap is null");
+			System.out.println("User Does not exists");
 			return false;
 		}
 	}
