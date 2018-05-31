@@ -334,7 +334,7 @@ public class RORDAOImpl implements RORDAO {
 	public boolean receiveMessageFunctionality(MessageDetails messageDetails, Map<String, String> userRecMessageMap,
 			Document recDocument, FindIterable<Document> findIterable) {
 		for (Document document : findIterable) {
-			System.out.println(document);
+
 			if (document.containsKey(ROR_REC_MESSAGE_LIST)) {
 				recDocument = document;
 				userRecMessageMap = (Map<String, String>) convertToPOJO(document.get(ROR_REC_MESSAGE_LIST), Map.class);
@@ -391,7 +391,6 @@ public class RORDAOImpl implements RORDAO {
 
 		if (checkUserExist(messageDetails.getFromUserId()) && checkUserExist(messageDetails.getToUserId())) {
 			for (Document document : findIterable) {
-				System.out.println(document);
 				if (document.containsKey(ROR_SENT_MESSAGE_LIST)) {
 					sendDocument = document;
 					userSentMessageMap = (Map<String, String>) convertToPOJO(document.get(ROR_SENT_MESSAGE_LIST),
@@ -474,8 +473,8 @@ public class RORDAOImpl implements RORDAO {
 					}
 					if (messageReceivedFromSecondUser != null) {
 						for (MessageDetails messageDetails : messageReceivedFromSecondUser) {
-							convoMap.put(RORUtils.convertStringToDateRORFormat(messageDetails.getMessageSentTime()), messageDetails);
-
+							convoMap.put(RORUtils.convertStringToDateRORFormat(messageDetails.getMessageSentTime()),
+									messageDetails);
 						}
 					}
 				} catch (Exception e) {
@@ -532,7 +531,6 @@ public class RORDAOImpl implements RORDAO {
 
 		List<MessageDetails> messagesSentToTheSecondUser = null;
 		for (Document document : findIterable) {
-			System.out.println(document);
 			if (document.containsKey(ROR_SENT_MESSAGE_LIST)) {
 				sendDocument = document;
 				userSentMessageMap = (Map<String, String>) convertToPOJO(document.get(ROR_SENT_MESSAGE_LIST),
