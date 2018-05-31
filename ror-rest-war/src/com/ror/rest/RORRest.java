@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ror.exception.RORException;
 import com.ror.model.MessageDetails;
 import com.ror.model.RORMessages;
 import com.ror.model.RORUser;
@@ -141,5 +142,14 @@ public class RORRest {
 	@RequestMapping(value = "/messages/details/{id}", method = RequestMethod.GET)
 	public @ResponseBody RORMessages messageComepleteDetails(@PathVariable("id") String id) {
 		return rorSvc.messageComepleteDetails(id);
+	}
+	
+	/**Rest Service to fetch the conversation between two users
+	 * @param u1andu2
+	 * @return
+	 */
+	@RequestMapping(value = "/messages/convo/{u1andu2}", method = RequestMethod.GET)
+	public @ResponseBody List<MessageDetails> fetchConversation(@PathVariable("u1andu2") String u1andu2) throws RORException {
+		return rorSvc.fetchConversation(u1andu2);
 	}
 }

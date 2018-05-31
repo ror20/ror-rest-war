@@ -2,6 +2,7 @@ package com.ror.svc;
 
 import java.util.List;
 
+import com.ror.exception.RORException;
 import com.ror.model.MessageDetails;
 import com.ror.model.RORMessages;
 import com.ror.model.RORUser;
@@ -30,5 +31,7 @@ public interface RORSvc {
 	public RORResponseVO draftMessage(MessageDetails messageDetails);
 
 	public RORMessages messageComepleteDetails(String id);
+
+	public List<MessageDetails> fetchConversation(String u1andu2) throws RORException;
 
 }

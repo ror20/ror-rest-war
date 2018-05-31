@@ -2,12 +2,16 @@ package com.ror.svc.impl;
 
 import static com.ror.constants.RORConstants.SYMBOL_AND;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ror.dao.RORDAO;
+import com.ror.exception.RORException;
 import com.ror.model.MessageDetails;
 import com.ror.model.RORMessages;
 import com.ror.model.RORUser;
@@ -87,6 +91,21 @@ public class RORSvcImpl implements RORSvc {
 		 List<MessageDetails> received = rorDAO.receivedMessage(id);
 		 RORMessages messages = new RORMessages(id, sent, received);
 		return messages;
+	}
+
+	@Override
+	public List<MessageDetails> fetchConversation(String u1andu2)  throws RORException {
+		List<MessageDetails> msesageDetailsList = new ArrayList<MessageDetails>();
+		System.out.println("At Service layer - fetchConversation");
+		Map<Date,MessageDetails> conversation = rorDAO.fetchConversation(u1andu2);
+		Iterator<Date> iterator = conversation.keySet().iterator();
+		while(iterator.hasNext()) {
+			Date convoDate = iterator.next();
+			MessageDetails messageDetails = conversation.get(convoDate);
+			msesageDetailsList.add(messageDetails);
+		}
+		System.out.println("At Service layer - returning fetchedConversation");
+		return msesageDetailsList;
 	}
 
 }

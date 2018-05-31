@@ -4,17 +4,22 @@ import static com.ror.constants.RORConstants.COLLECTION_NAME;
 import static com.ror.constants.RORConstants.DATABASE_NAME;
 import static com.ror.constants.RORConstants.DOCUMENT_ID;
 import static com.ror.constants.RORConstants.DOCUMENT_ID_VALUE;
+import static com.ror.constants.RORConstants.ROR_MESSAGE_RECEIVED_DOC;
+import static com.ror.constants.RORConstants.ROR_MESSAGE_SENT_DOC;
 import static com.ror.constants.RORConstants.ROR_REC_MESSAGE_LIST;
 import static com.ror.constants.RORConstants.ROR_SENT_MESSAGE_LIST;
+import static com.ror.constants.RORConstants.SYMBOL_AND;
 import static com.ror.constants.RORConstants.USERS_DOCUMENT;
 import static com.ror.utils.RORUtils.convertToJson;
 import static com.ror.utils.RORUtils.convertToPOJO;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +33,10 @@ import com.ror.dao.RORDAO;
 import com.ror.exception.RORException;
 import com.ror.model.MessageDetails;
 import com.ror.model.RORUser;
+import com.ror.utils.RORUtils;
 import com.ror.vo.RORResponseVO;
 
 public class RORDAOImpl implements RORDAO {
-
-	public static final String ROR_MESSAGE_RECEIVED_DOC = "ROR_Message_Received_DOC";
-
-	public static final String ROR_MESSAGE_SENT_DOC = "ROR_Message_Sent_DOC";
 
 	private static MongoDatabase mongoDatabase = null;
 
@@ -314,10 +316,11 @@ public class RORDAOImpl implements RORDAO {
 		FindIterable<Document> findIterable = mongoCollection.find();
 		boolean sendFlag = sendMessageFunctionality(messageDetails, userSentMessageMap, sendDocument, findIterable);
 		if (sendFlag) {
-			boolean receiveFlag = receiveMessageFunctionality(messageDetails, userRecMessageMap, recDocument,findIterable);
+			boolean receiveFlag = receiveMessageFunctionality(messageDetails, userRecMessageMap, recDocument,
+					findIterable);
 			if (receiveFlag) {
 				responseVO = new RORResponseVO("200 OK", "Message Deleivered Successfully");
-			}else {
+			} else {
 				responseVO = new RORResponseVO("400 Bad Request", "Message Failed to Deleiver");
 			}
 		} else {
@@ -441,6 +444,127 @@ public class RORDAOImpl implements RORDAO {
 			System.out.println("User Does not exists");
 			return false;
 		}
+	}
+
+	@Override
+	public Map<Date, MessageDetails> fetchConversation(String u1andu2) throws RORException {
+		Map<Date, MessageDetails> convoMap = new TreeMap<Date, MessageDetails>();
+		String[] userSplit = u1andu2.split(SYMBOL_AND);
+		String userFirstId = userSplit[0].trim();
+		String userSecondId = userSplit[1].trim();
+		if (userFirstId != null && userSecondId != null && !userFirstId.isEmpty() && !userSecondId.isEmpty()) {
+			if (checkUserExist(userFirstId) && checkUserExist(userSecondId)) {
+				Map<String, String> userSentMessageMap = null;
+				Map<String, String> userRecMessageMap = null;
+				Document sendDocument = null;
+				Document recDocument = null;
+				setMongoParameters();
+				FindIterable<Document> findIterable = mongoCollection.find();
+				List<MessageDetails> messageSentToSecondUser = fetchMessageSentToParticularUser(userFirstId,
+						userSecondId, userSentMessageMap, sendDocument, findIterable);
+				List<MessageDetails> messageReceivedFromSecondUser = fetchMessageReceivedFromParticularUser(userFirstId,
+						userSecondId, userRecMessageMap, recDocument, findIterable);
+				try {
+					if (messageSentToSecondUser != null) {
+						for (MessageDetails messageDetails : messageSentToSecondUser) {
+							convoMap.put(RORUtils.convertStringToDateRORFormat(messageDetails.getMessageSentTime()),
+									messageDetails);
+
+						}
+					}
+					if (messageReceivedFromSecondUser != null) {
+						for (MessageDetails messageDetails : messageReceivedFromSecondUser) {
+							convoMap.put(RORUtils.convertStringToDateRORFormat(messageDetails.getMessageSentTime()), messageDetails);
+
+						}
+					}
+				} catch (Exception e) {
+					throw new RORException("Exception occured while formating date");
+				}
+			} else {
+				System.out.println("User Doesnt exist");
+			}
+		} else {
+			System.out.println("One of the user ID is null or empty");
+		}
+		return convoMap;
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<MessageDetails> fetchMessageReceivedFromParticularUser(String userFirstId, String userSecondId,
+			Map<String, String> userRecMessageMap, Document recDocument, FindIterable<Document> findIterable) {
+		List<MessageDetails> messagesReceivedFromTheSecondUser = null;
+		for (Document document : findIterable) {
+			if (document.containsKey(ROR_REC_MESSAGE_LIST)) {
+				recDocument = document;
+				userRecMessageMap = (Map<String, String>) convertToPOJO(document.get(ROR_REC_MESSAGE_LIST), Map.class);
+				break;
+			}
+		}
+		System.out.println("Fetched users received message map from the document");
+		String recMessageMapValue = userRecMessageMap.get(userFirstId);
+		if (recMessageMapValue != null && !recMessageMapValue.isEmpty()) {
+			List<MessageDetails> recMessageList = (List<MessageDetails>) convertToPOJO(recMessageMapValue, List.class);
+			System.out.println("Message received list is obtained");
+			if (recMessageList != null) {
+				messagesReceivedFromTheSecondUser = new ArrayList<MessageDetails>();
+				for (int i = 0; i < recMessageList.size(); i++) {
+					MessageDetails messageDetails = (MessageDetails) convertToPOJO(convertToJson(recMessageList.get(i)),
+							MessageDetails.class);
+					if (messageDetails.getFromUserId().equals(userSecondId)
+							&& messageDetails.getToUserId().equals(userFirstId)) {
+						messagesReceivedFromTheSecondUser.add(messageDetails);
+					}
+				}
+			} else {
+				System.out.println("message list received is null");
+			}
+
+		} else {
+			System.out.println("No messages received by the User");
+		}
+		return messagesReceivedFromTheSecondUser;
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<MessageDetails> fetchMessageSentToParticularUser(String userFirstId, String userSecondId,
+			Map<String, String> userSentMessageMap, Document sendDocument, FindIterable<Document> findIterable) {
+
+		List<MessageDetails> messagesSentToTheSecondUser = null;
+		for (Document document : findIterable) {
+			System.out.println(document);
+			if (document.containsKey(ROR_SENT_MESSAGE_LIST)) {
+				sendDocument = document;
+				userSentMessageMap = (Map<String, String>) convertToPOJO(document.get(ROR_SENT_MESSAGE_LIST),
+						Map.class);
+				break;
+			}
+		}
+		System.out.println("Fetched users sent message map from the document");
+		String sentMessageMapValue = userSentMessageMap.get(userFirstId);
+		if (sentMessageMapValue != null && !sentMessageMapValue.isEmpty()) {
+			List<MessageDetails> sentMessageList = (List<MessageDetails>) convertToPOJO(sentMessageMapValue,
+					List.class);
+			System.out.println("Message sent list is obtained");
+			messagesSentToTheSecondUser = new ArrayList<MessageDetails>();
+			if (sentMessageList != null) {
+				messagesSentToTheSecondUser = new ArrayList<MessageDetails>();
+				for (int i = 0; i < sentMessageList.size(); i++) {
+					MessageDetails messageDetails = (MessageDetails) convertToPOJO(
+							convertToJson(sentMessageList.get(i)), MessageDetails.class);
+					if (messageDetails.getFromUserId().equals(userFirstId)
+							&& messageDetails.getToUserId().equals(userSecondId)) {
+						messagesSentToTheSecondUser.add(messageDetails);
+					}
+				}
+			} else {
+				System.out.println("message list sent is null");
+			}
+
+		} else {
+			System.out.println("No messages sent by the User");
+		}
+		return messagesSentToTheSecondUser;
 	}
 
 }
