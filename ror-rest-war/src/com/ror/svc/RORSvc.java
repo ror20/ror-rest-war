@@ -34,4 +34,6 @@ public interface RORSvc {
 
 	public List<MessageDetails> fetchConversation(String u1andu2) throws RORException;
 
+	public List<RORUser> searchUser(String userName);
+
 }

@@ -25,4 +25,6 @@ public class RORConstants {
 	public static final String MM_DD_YYYY_HH_MM_SS_DATE = "MM/dd/yyyy HH:mm:ss";
 	
 	public static final String EEE_MMM_DD_HH_MM_SS_Z_YYYY_DATE = "EEE MMM dd HH:mm:ss z yyyy";
+	
+	public static final String APPEND_SPACE = " ";
 }

@@ -130,6 +130,7 @@ public class RORRest {
 	 */
 	@RequestMapping(value = "/messages/draft", method = RequestMethod.POST)
 	public @ResponseBody RORResponseVO draftMessage(@RequestBody MessageDetails messageDetails) {
+		System.out.println("Incoming request:"+messageDetails);
 		return rorSvc.draftMessage(messageDetails);
 	}
 
@@ -151,5 +152,15 @@ public class RORRest {
 	@RequestMapping(value = "/messages/convo/{u1andu2}", method = RequestMethod.GET)
 	public @ResponseBody List<MessageDetails> fetchConversation(@PathVariable("u1andu2") String u1andu2) throws RORException {
 		return rorSvc.fetchConversation(u1andu2);
+	}
+	
+	/**Rest Service to search users based on the user name
+	 * @param userName
+	 * @return
+	 * @throws RORException
+	 */
+	@RequestMapping(value = "/searchUser/{userName}", method = RequestMethod.GET)
+	public @ResponseBody List<RORUser> searchUser(@PathVariable("userName") String userName) throws RORException {
+		return rorSvc.searchUser(userName);
 	}
 }

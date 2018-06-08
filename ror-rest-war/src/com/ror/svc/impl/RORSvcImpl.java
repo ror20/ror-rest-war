@@ -1,5 +1,6 @@
 package com.ror.svc.impl;
 
+import static com.ror.constants.RORConstants.APPEND_SPACE;
 import static com.ror.constants.RORConstants.SYMBOL_AND;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import com.ror.vo.RORResponseVO;
 
 public class RORSvcImpl implements RORSvc {
 
+	
 	@Autowired
 	private RORDAO rorDAO;
 
@@ -87,25 +89,46 @@ public class RORSvcImpl implements RORSvc {
 
 	@Override
 	public RORMessages messageComepleteDetails(String id) {
-		 List<MessageDetails> sent = rorDAO.sentMessage(id);
-		 List<MessageDetails> received = rorDAO.receivedMessage(id);
-		 RORMessages messages = new RORMessages(id, sent, received);
+		List<MessageDetails> sent = rorDAO.sentMessage(id);
+		List<MessageDetails> received = rorDAO.receivedMessage(id);
+		RORMessages messages = new RORMessages(id, sent, received);
 		return messages;
 	}
 
 	@Override
-	public List<MessageDetails> fetchConversation(String u1andu2)  throws RORException {
+	public List<MessageDetails> fetchConversation(String u1andu2) throws RORException {
 		List<MessageDetails> msesageDetailsList = new ArrayList<MessageDetails>();
 		System.out.println("At Service layer - fetchConversation");
-		Map<Date,MessageDetails> conversation = rorDAO.fetchConversation(u1andu2);
+		Map<Date, MessageDetails> conversation = rorDAO.fetchConversation(u1andu2);
 		Iterator<Date> iterator = conversation.keySet().iterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			Date convoDate = iterator.next();
 			MessageDetails messageDetails = conversation.get(convoDate);
 			msesageDetailsList.add(messageDetails);
 		}
 		System.out.println("At Service layer - returning fetchedConversation");
 		return msesageDetailsList;
+	}
+
+	@Override
+	public List<RORUser> searchUser(String userName) {
+		System.out.println("At service Layer - Search user "+userName);
+		List<RORUser> matchingUsers = new ArrayList<>();
+		List<RORUser> listOfAllUser = rorDAO.fetchAllUser();
+		String[] names = userName.split(APPEND_SPACE);
+				if (names.length > 0) {
+			for (int i = 0; i < names.length; i++) {
+				System.out.println("Searching the user based on "+(i+1)+" name");
+				for (RORUser user : listOfAllUser) {
+					if (user.getUserName().toLowerCase().contains(names[i].trim().toLowerCase())) {
+						matchingUsers.add(user);
+					}
+				}
+			}
+		}
+		System.out.println("matching User List:");
+		System.out.println(matchingUsers);
+		return matchingUsers;
 	}
 
 }
