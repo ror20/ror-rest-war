@@ -319,12 +319,12 @@ public class RORDAOImpl implements RORDAO {
 			boolean receiveFlag = receiveMessageFunctionality(messageDetails, userRecMessageMap, recDocument,
 					findIterable);
 			if (receiveFlag) {
-				responseVO = new RORResponseVO("200 OK", "Message Deleivered Successfully");
+				responseVO = new RORResponseVO("200 OK", "Message Delivered Successfully");
 			} else {
-				responseVO = new RORResponseVO("400 Bad Request", "Message Failed to Deleiver");
+				responseVO = new RORResponseVO("400 Bad Request", "Message Failed to Deliver");
 			}
 		} else {
-			responseVO = new RORResponseVO("400 Bad Request", "Message Failed to Deleiver");
+			responseVO = new RORResponseVO("400 Bad Request", "Message Failed to Deliver");
 		}
 
 		return responseVO;
